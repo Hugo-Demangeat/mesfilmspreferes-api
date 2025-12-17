@@ -14,11 +14,10 @@ class ProfilController extends Controller
         if (!Auth::check()) {
             return redirect('/connexion')->with('error', 'Veuillez vous connecter.');
         }
-        
-        // À implémenter : récupérer les infos de l'utilisateur
-        // $user = Auth::user();
-        
-        return view('profil.index');
+        // Récupérer les infos de l'utilisateur (passer l'objet user à la vue)
+        $user = Auth::user();
+
+        return view('profil.index', ['user' => $user]);
     }
     
     // Met à jour les informations du profil

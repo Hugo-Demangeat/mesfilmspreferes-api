@@ -31,11 +31,25 @@
 </head>
 <body>
     <div class="container">
+        @auth
+            @include('partials.navbar')
+        @endauth
+
         <h1>👤 Mon Profil</h1>
 
         @if(session('success'))
             <div class="success-message">{{ session('success') }}</div>
         @endif
+
+        <div style="text-align:center;margin-bottom:12px;">
+            <form action="{{ route('deconnection') }}" method="POST" style="display:inline-block;">
+                @csrf
+                <button type="submit" style="background:#e05555;border:none;padding:10px 16px;border-radius:8px;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:8px" aria-label="Se déconnecter">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Se déconnecter</span>
+                </button>
+            </form>
+        </div>
 
         <form action="{{ route('profil.update') }}" method="POST">
             @csrf

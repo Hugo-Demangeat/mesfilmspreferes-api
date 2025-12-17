@@ -1,73 +1,63 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $film['title'] }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #fafafa;
-            padding: 40px;
-        }
+@extends('layouts.app')
 
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
+@section('title', $film['title'] ?? 'Détails film')
 
-        img {
-            width: 300px;
-            border-radius: 8px;
-        }
+@section('content')
+    <div class="container-card">
+        <div class="film-detail">
+            <div class="film-poster">
+                @if($film['poster_path'])
+                    <img src="https://image.tmdb.org/t/p/w500{{ $film['poster_path'] }}" style="width:100%;display:block">
+                @else
+                    <div style="width:100%;height:420px;background:#eee;display:flex;align-items:center;justify-content:center">Pas d'affiche</div>
+                @endif
+            </div>
 
-        h1 {
-            margin-top: 10px;
-        }
+            <div class="film-meta">
+                <h1 class="film-title">{{ $film['title'] }}</h1>
+                <div class="film-sub">{{ $film['release_date'] ?? '' }} • {{ $film['runtime'] ?? '' }} min</div>
+                        <p class="film-overview">{{ $film['overview'] ?: 'Pas de résumé disponible.' }}</p>
 
-        button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+                        @if(!empty($film['vote_average']))
+                            <div style="margin-top:10px;font-weight:700">Note TMDB: {{ $film['vote_average'] }} / 10</div>
+                        @endif
 
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            color: #667eea;
-        }
-    </style>
-</head>
-<body>
+                        <form action="{{ route('films.addFavoris') }}" method="POST" style="margin-top:18px">
+                            @csrf
+                            <input type="hidden" name="film_id" value="{{ $film['id'] }}">
+                            <input type="hidden" name="titre" value="{{ $film['title'] }}">
+                            <button class="btn-primary" type="submit">Ajouter aux favoris</button>
+                            <a href="{{ route('films.search') }}" class="btn-secondary" style="margin-left:10px">Retour à la recherche</a>
+                        </form>
 
-<div class="container">
+                        @if(!empty($trailer))
+                            <div style="margin-top:20px">
+                                <h3>Bande-annonce</h3>
+                                <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px">
+                                    <iframe src="https://www.youtube.com/embed/{{ $trailer['key'] }}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        @endif
 
-    <h1>{{ $film['title'] }}</h1>
-
-    @if($film['poster_path'])
-        <img src="https://image.tmdb.org/t/p/w500{{ $film['poster_path'] }}">
-    @endif
-
-    <p><strong>Résumé :</strong><br>{{ $film['overview'] ?: 'Pas de résumé disponible.' }}</p>
-
-    <form action="{{ route('films.addFavoris') }}" method="POST">
-        @csrf
-        <input type="hidden" name="film_id" value="{{ $film['id'] }}">
-        <input type="hidden" name="titre" value="{{ $film['title'] }}">
-        <button type="submit">Ajouter aux favoris ⭐</button>
-    </form>
-
-    <a href="{{ route('films.search') }}">⬅ Retour</a>
-
-</div>
-
-</body>
-</html>
+                        @if(!empty($cast))
+                            <div style="margin-top:20px">
+                                <h3>Distribution principale</h3>
+                                <div style="display:flex;gap:12px;overflow:auto;padding-top:8px">
+                                    @foreach(array_slice($cast,0,10) as $c)
+                                        <div style="width:110px;text-align:center">
+                                            @if(!empty($c['profile_path']))
+                                                <img src="https://image.tmdb.org/t/p/w154{{ $c['profile_path'] }}" style="width:100%;height:150px;object-fit:cover;border-radius:6px">
+                                            @else
+                                                <div style="width:100%;height:150px;background:#eee;border-radius:6px"></div>
+                                            @endif
+                                            <div style="font-weight:700;margin-top:6px">{{ $c['name'] }}</div>
+                                            <div style="color:#6b7280;font-size:13px">{{ $c['character'] ?? '' }}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+            </div>
+        </div>
+    </div>
+@endsection

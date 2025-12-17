@@ -30,6 +30,9 @@
 </head>
 <body>
     <div class="container">
+        @auth
+            @include('partials.navbar')
+        @endauth
         <h1>⭐ Mes Favoris</h1>
 
         @if(session('success'))

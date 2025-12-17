@@ -14,11 +14,15 @@ class FavoriController extends Controller
         if (!Auth::check()) {
             return redirect('/connexion')->with('error', 'Veuillez vous connecter.');
         }
-        
         // À implémenter : récupérer les favoris de l'utilisateur
-        // $favoris = Favori::where('user_id', Auth::id())->get();
-        
-        return view('favoris.index');
+        // Si la table n'existe pas encore, fournir une collection vide pour éviter les erreurs dans la vue
+        try {
+            $favoris = \App\Models\Favori::where('user_id', Auth::id())->get();
+        } catch (\Throwable $e) {
+            $favoris = collect([]);
+        }
+
+        return view('favoris.index', ['favoris' => $favoris]);
     }
     
     // Ajoute un film aux favoris

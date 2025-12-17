@@ -8,19 +8,26 @@ use App\Http\Controllers\PartageController;
 use App\Http\Controllers\ProfilController;
 use Illuminate\Support\Facades\Route;
 
+// Route par défaut (page d'accueil)
+Route::get('/', [ConnectController::class, 'index'])->name('accueil');
+
 // Routes publiques
 Route::controller(ConnectController::class)->group(function () {
-    Route::get('/accueil', 'index')->name('accueil');
+    Route::get('/accueil', 'index'); // optionnel (alias)
     Route::post('/accueil', 'deconnect')->name('deconnection');
-    
+
     Route::get('/creerCompte', 'showCreateForm')->name('creerCompte');
     Route::post('/creerCompte/ajouter', 'create')->name('creerCompte.create');
-    
+
     Route::get('/connexion', 'showLoginForm')->name('connexion');
     Route::post('/connexion', 'connect')->name('connexion.connect');
 });
 
 // Routes protégées
+// API helpers for AJAX searches
+Route::get('/api/users/search', [AmiController::class, 'searchUsers'])->name('api.users.search');
+Route::get('/api/movies/search', [FilmController::class, 'searchMoviesAjax'])->name('api.movies.search');
+
 Route::controller(FilmController::class)->group(function () {
     Route::get('/rechercher', 'search')->name('films.search');
     Route::post('/rechercher', 'searchFilm')->name('films.searchFilm');

@@ -28,6 +28,9 @@
 </head>
 <body>
     <div class="container">
+        @auth
+            @include('partials.navbar')
+        @endauth
         <h1>👥 Mes Amis</h1>
 
         @if(session('success'))
@@ -39,9 +42,44 @@
         <h2>Ajouter un ami</h2>
         <form action="{{ route('amis.add') }}" method="POST">
             @csrf
-            <input type="number" name="ami_id" placeholder="ID de l'ami" required>
+            <input type="text" id="friend_search" placeholder="Tapez nom ou pseudo...">
+            <input type="hidden" name="ami_id" id="ami_id">
+            <div id="friend_suggestions" style="max-width:480px;margin:8px 0"></div>
             <button type="submit">Ajouter</button>
         </form>
+
+        <style>
+            .suggestion-item{display:flex;gap:8px;align-items:center;padding:6px;border:1px solid #eee;border-radius:6px;margin-bottom:6px;cursor:pointer}
+            .suggestion-item:hover{background:#f5f7ff}
+        </style>
+
+        <script>
+            const friendSearch = document.getElementById('friend_search');
+            const friendSuggestions = document.getElementById('friend_suggestions');
+            const amiIdInput = document.getElementById('ami_id');
+
+            function debounce(fn, delay=300){let t;return (...args)=>{clearTimeout(t);t=setTimeout(()=>fn(...args),delay)}}
+
+            async function fetchUsers(q){
+                if(!q) { friendSuggestions.innerHTML=''; return }
+                const res = await fetch('/api/users/search?q='+encodeURIComponent(q));
+                const data = await res.json();
+                friendSuggestions.innerHTML='';
+                data.forEach(u=>{
+                    const el = document.createElement('div');
+                    el.className='suggestion-item';
+                    el.innerHTML = `<div><strong>${u.firstname} ${u.lastname}</strong><div style="font-size:12px;color:#666">@${u.username}</div></div>`;
+                    el.addEventListener('click', ()=>{
+                        friendSearch.value = u.firstname + ' ' + u.lastname + ' (@'+u.username+')';
+                        amiIdInput.value = u.id;
+                        friendSuggestions.innerHTML='';
+                    });
+                    friendSuggestions.appendChild(el);
+                })
+            }
+
+            friendSearch.addEventListener('input', debounce(e=>fetchUsers(e.target.value)));
+        </script>
 
         @if($amis->isEmpty())
             <p>Vous n'avez pas encore d'amis.</p>

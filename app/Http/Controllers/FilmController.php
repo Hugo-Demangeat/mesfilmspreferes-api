@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 class FilmController extends Controller
 {
@@ -82,14 +83,67 @@ class FilmController extends Controller
     {
         $apiKey = '63905b28b94957ba2d061a85b849243f';
 
-        $url = "https://api.themoviedb.org/3/movie/{$id}?api_key={$apiKey}&language=fr";
-        $response = file_get_contents($url);
+        try {
+            // Details
+            $url = "https://api.themoviedb.org/3/movie/{$id}?api_key={$apiKey}&language=fr";
+            $response = @file_get_contents($url);
+            if ($response === false) abort(404);
+            $film = json_decode($response, true);
 
-        if (!$response) abort(404);
+            // Credits (cast)
+            $urlCredits = "https://api.themoviedb.org/3/movie/{$id}/credits?api_key={$apiKey}&language=fr";
+            $respCredits = @file_get_contents($urlCredits);
+            $credits = $respCredits ? json_decode($respCredits, true) : null;
+            $cast = $credits['cast'] ?? [];
 
-        $film = json_decode($response, true);
+            // Videos (trailers)
+            $urlVideos = "https://api.themoviedb.org/3/movie/{$id}/videos?api_key={$apiKey}&language=fr";
+            $respVideos = @file_get_contents($urlVideos);
+            $videos = $respVideos ? json_decode($respVideos, true) : null;
+            $trailer = null;
+            if (!empty($videos['results'])) {
+                foreach ($videos['results'] as $v) {
+                    if ((strtolower($v['type'] ?? '') === 'trailer' || strtolower($v['type'] ?? '') === 'teaser') && strtolower($v['site'] ?? '') === 'youtube') {
+                        $trailer = $v; break;
+                    }
+                }
+            }
 
-        return view('films.show', compact('film'));
+            return view('films.show', compact('film', 'cast', 'trailer'));
+        } catch (\Throwable $e) {
+            // fallback: try to show basic details
+            $url = "https://api.themoviedb.org/3/movie/{$id}?api_key={$apiKey}&language=fr";
+            $response = @file_get_contents($url);
+            if (!$response) abort(404);
+            $film = json_decode($response, true);
+            return view('films.show', compact('film'));
+        }
+    }
+
+    // Endpoint AJAX pour rechercher des films (retour JSON)
+    public function searchMoviesAjax(Request $request): JsonResponse
+    {
+        $q = $request->query('q');
+        if (!$q) {
+            return response()->json([]);
+        }
+
+        $results = $this->callApi($q);
+        if (isset($results['error'])) {
+            return response()->json([]);
+        }
+
+        $slice = array_slice($results, 0, 10);
+        $mapped = array_map(function ($m) {
+            return [
+                'id' => $m['id'] ?? null,
+                'title' => $m['title'] ?? ($m['name'] ?? ''),
+                'poster_path' => $m['poster_path'] ?? null,
+                'release_date' => $m['release_date'] ?? null,
+            ];
+        }, $slice);
+
+        return response()->json($mapped);
     }
 
 
