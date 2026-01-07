@@ -26,7 +26,11 @@
                             @csrf
                             <input type="hidden" name="film_id" value="{{ $film['id'] }}">
                             <input type="hidden" name="titre" value="{{ $film['title'] }}">
-                            <button class="btn-primary" type="submit">Ajouter aux favoris</button>
+                            @if(!empty($isFavori))
+                                <button class="btn-primary" type="submit">Supprimer des favoris</button>
+                            @else
+                                <button class="btn-primary" type="submit">Ajouter aux favoris</button>
+                            @endif
                             <a href="{{ route('films.search') }}" class="btn-secondary" style="margin-left:10px">Retour à la recherche</a>
                         </form>
 

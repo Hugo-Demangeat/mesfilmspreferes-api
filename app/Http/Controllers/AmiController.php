@@ -64,21 +64,47 @@ class AmiController extends Controller
     public function searchUsers(Request $request)
     {
         $q = $request->query('q');
-        if (!$q) {
-            return response()->json([]);
-        }
         $currentId = Auth::check() ? Auth::id() : 0;
 
-        $users = User::where(function($query) use ($q) {
-                $query->where('username', 'like', "%{$q}%")
-                      ->orWhere('firstname', 'like', "%{$q}%")
-                      ->orWhere('lastname', 'like', "%{$q}%");
-            })
-            ->where('id', '!=', $currentId)
-            ->limit(10)
-            ->get(['id', 'username', 'firstname', 'lastname']);
+        $query = User::where('id', '!=', $currentId);
+
+        if ($q) {
+            $query->where(function($q2) use ($q) {
+                $q2->where('username', 'like', "%{$q}%")
+                   ->orWhere('firstname', 'like', "%{$q}%")
+                   ->orWhere('lastname', 'like', "%{$q}%");
+            });
+        }
+
+        // return limited results when filtering, or more when listing all
+        $limit = $q ? 10 : 50;
+        $users = $query->limit($limit)->get(['id', 'username', 'firstname', 'lastname']);
 
         return response()->json($users);
+    }
+
+    // Search only among the current user's friends (for partage)
+    public function searchFriends(Request $request)
+    {
+        if (!Auth::check()) return response()->json([]);
+
+        $q = $request->query('q');
+        $userId = Auth::id();
+
+        $friends = \App\Models\FriendUser::where('user_id', $userId)->pluck('friend_id')->toArray();
+        if (empty($friends)) return response()->json([]);
+
+        $query = User::whereIn('id', $friends);
+        if ($q) {
+            $query->where(function($q2) use ($q) {
+                $q2->where('username', 'like', "%{$q}%")
+                   ->orWhere('firstname', 'like', "%{$q}%")
+                   ->orWhere('lastname', 'like', "%{$q}%");
+            });
+        }
+
+        $results = $query->limit(30)->get(['id', 'username', 'firstname', 'lastname']);
+        return response()->json($results);
     }
     
     // Supprime un ami

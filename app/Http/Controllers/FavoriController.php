@@ -39,14 +39,23 @@ class FavoriController extends Controller
             'titre' => 'required|string'
         ]);
         
-        // À implémenter : créer un nouveau favori
-        // $favori = Favori::create([
-        //     'user_id' => Auth::id(),
-        //     'film_id' => $request->film_id,
-        //     'titre' => $request->titre
-        // ]);
-        
-        return redirect('/mesFavoris')->with('success', 'Film ajouté aux favoris !');
+        $filmId = (string) $request->input('film_id');
+        $titre = $request->input('titre');
+        try {
+            $exists = \App\Models\Favori::where('user_id', Auth::id())->where('favori_id', $filmId)->exists();
+            if (!$exists) {
+                \App\Models\Favori::create([
+                    'favori_id' => $filmId,
+                    'film_title' => $titre,
+                    'film_poster_path' => $request->input('film_poster_path'),
+                    'film_overview' => $request->input('film_overview'),
+                    'user_id' => Auth::id()
+                ]);
+            }
+            return redirect('/mesFavoris')->with('success', 'Film ajouté aux favoris !');
+        } catch (\Throwable $e) {
+            return redirect('/mesFavoris')->with('error', 'Impossible d\'ajouter le favori.');
+        }
     }
     
     // Supprime un film des favoris
@@ -57,10 +66,13 @@ class FavoriController extends Controller
             return redirect('/connexion')->with('error', 'Veuillez vous connecter.');
         }
         
-        // À implémenter : supprimer le favori
-        // Favori::findOrFail($favori)->delete();
-        
-        return redirect('/mesFavoris')->with('success', 'Film supprimé des favoris !');
+        try {
+            $f = \App\Models\Favori::where('id', $favori)->where('user_id', Auth::id())->first();
+            if ($f) $f->delete();
+            return redirect('/mesFavoris')->with('success', 'Film supprimé des favoris !');
+        } catch (\Throwable $e) {
+            return redirect('/mesFavoris')->with('error', 'Impossible de supprimer le favori.');
+        }
     }
     
     // Met à jour l'avis sur un film favori
@@ -77,13 +89,32 @@ class FavoriController extends Controller
             'note' => 'required|integer|between:1,5'
         ]);
         
-        // À implémenter : mettre à jour l'avis
-        // $favoriObj = Favori::findOrFail($favori);
-        // $favoriObj->update([
-        //     'avis' => $request->avis,
-        //     'note' => $request->note
-        // ]);
-        
-        return redirect('/mesFavoris')->with('success', 'Avis mis à jour !');
+        try {
+            $favoriObj = \App\Models\Favori::where('id', $favori)->where('user_id', Auth::id())->firstOrFail();
+
+            // Create or update an 'Avi' (avis) record linked to this favori and user
+            $avi = \App\Models\Avi::where('favori_id', $favoriObj->id)->where('user_id', Auth::id())->first();
+            if ($avi) {
+                $avi->update([
+                    'rating' => $request->input('note'),
+                    'texte' => $request->input('avis')
+                ]);
+            } else {
+                \App\Models\Avi::create([
+                    'favori_id' => $favoriObj->id,
+                    'user_id' => Auth::id(),
+                    'rating' => $request->input('note'),
+                    'texte' => $request->input('avis')
+                ]);
+            }
+
+            // Also store a short copy on the Favori if desired
+            $favoriObj->avis = $request->input('avis');
+            $favoriObj->save();
+
+            return redirect('/mesFavoris')->with('success', 'Avis mis à jour !');
+        } catch (\Throwable $e) {
+            return redirect('/mesFavoris')->with('error', 'Impossible de mettre à jour l\'avis.');
+        }
     }
 }

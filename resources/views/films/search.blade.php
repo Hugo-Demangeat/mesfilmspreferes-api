@@ -112,10 +112,11 @@
 @section('content')
     <div style="display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:18px">
         <h1 style="margin:0">Recherche de films</h1>
-        <form action="{{ route('films.searchFilm') }}" method="POST" style="display:flex;gap:8px;align-items:center">
+        <form id="searchForm" action="{{ route('films.searchFilm') }}" method="POST" style="display:flex;gap:8px;align-items:center;position:relative">
             @csrf
-            <input type="text" name="titre" placeholder="Titre du film…" value="{{ $titre ?? '' }}" style="padding:10px;border-radius:8px;border:1px solid #e5e7eb">
+            <input id="movie_search" type="text" name="titre" placeholder="Titre du film…" value="{{ $titre ?? '' }}" style="padding:10px;border-radius:8px;border:1px solid #e5e7eb;min-width:360px">
             <button class="btn-primary" type="submit">Rechercher</button>
+            <div id="movie_suggestions" style="position:absolute;left:0;top:calc(100% + 8px);width:480px;z-index:40"></div>
         </form>
     </div>
 
@@ -142,4 +143,41 @@
             </div>
         @endif
     @endisset
+    <script>
+        (function(){
+            const input = document.getElementById('movie_search');
+            const sugg = document.getElementById('movie_suggestions');
+            function debounce(fn,delay=250){let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),delay)}}
+
+            async function fetchMovies(q){
+                if(!q){sugg.innerHTML=''; return}
+                try{
+                    const res = await fetch('/api/movies/search?q='+encodeURIComponent(q));
+                    const data = await res.json();
+                    sugg.innerHTML='';
+                    data.forEach(m=>{
+                        const item = document.createElement('a');
+                        item.className='suggestion-item';
+                        item.href = '/film/'+m.id;
+                        const img = m.poster_path ? 'https://image.tmdb.org/t/p/w92'+m.poster_path : 'https://via.placeholder.com/48x72?text=?';
+                        item.style.display='flex';
+                        item.style.gap='8px';
+                        item.style.alignItems='center';
+                        item.style.padding='8px';
+                        item.style.border='1px solid rgba(0,0,0,0.06)';
+                        item.style.borderRadius='8px';
+                        item.style.background='#fff';
+                        item.style.textDecoration='none';
+                        item.style.color='inherit';
+                        item.innerHTML = `<img src="${img}" style="width:48px;height:72px;object-fit:cover;border-radius:6px"><div style="font-weight:700">${m.title}<div style=\"font-size:12px;color:#6b7280;margin-top:4px\">${m.release_date || ''}</div></div>`;
+                        sugg.appendChild(item);
+                    })
+                }catch(e){sugg.innerHTML=''}
+            }
+
+            input.addEventListener('input', debounce(e=>fetchMovies(e.target.value)));
+            input.addEventListener('focus', ()=>fetchMovies(input.value));
+            document.addEventListener('click', function(e){ if(!sugg.contains(e.target) && e.target!==input) sugg.innerHTML=''});
+        })();
+    </script>
 @endsection

@@ -109,14 +109,31 @@ class FilmController extends Controller
                 }
             }
 
-            return view('films.show', compact('film', 'cast', 'trailer'));
+            $isFavori = false;
+            try {
+                if (\Illuminate\Support\Facades\Auth::check()) {
+                    $isFavori = \App\Models\Favori::where('user_id', \Illuminate\Support\Facades\Auth::id())->where('favori_id', $id)->exists();
+                }
+            } catch (\Throwable $e) {
+                $isFavori = false;
+            }
+
+            return view('films.show', compact('film', 'cast', 'trailer', 'isFavori'));
         } catch (\Throwable $e) {
             // fallback: try to show basic details
             $url = "https://api.themoviedb.org/3/movie/{$id}?api_key={$apiKey}&language=fr";
             $response = @file_get_contents($url);
             if (!$response) abort(404);
             $film = json_decode($response, true);
-            return view('films.show', compact('film'));
+            $isFavori = false;
+            try {
+                if (\Illuminate\Support\Facades\Auth::check()) {
+                    $isFavori = \App\Models\Favori::where('user_id', \Illuminate\Support\Facades\Auth::id())->where('favori_id', $id)->exists();
+                }
+            } catch (\Throwable $e) {
+                $isFavori = false;
+            }
+            return view('films.show', compact('film', 'isFavori'));
         }
     }
 
@@ -160,13 +177,43 @@ class FilmController extends Controller
             'titre'   => 'required|string'
         ]);
 
-        // (À implémenter plus tard)
-        // Favori::create([
-        //     'user_id' => Auth::id(),
-        //     'film_id' => $request->film_id,
-        //     'titre'   => $request->titre
-        // ]);
+        $filmId = (string) $request->input('film_id');
+        $userId = Auth::id();
 
-        return back()->with('success', 'Film ajouté aux favoris !');
+        try {
+            $existing = \App\Models\Favori::where('user_id', $userId)->where('favori_id', $filmId)->first();
+            if ($existing) {
+                // toggle off
+                $existing->delete();
+                return back()->with('success', 'Film supprimé des favoris.');
+            }
+
+            // try to fetch poster/overview for nicer record (best-effort)
+            $poster = null; $overview = null; $year = null;
+            try {
+                $apiKey = '63905b28b94957ba2d061a85b849243f';
+                $url = "https://api.themoviedb.org/3/movie/{$filmId}?api_key={$apiKey}&language=fr";
+                $resp = @file_get_contents($url);
+                if ($resp) {
+                    $data = json_decode($resp, true);
+                    $poster = isset($data['poster_path']) ? 'https://image.tmdb.org/t/p/w500'.$data['poster_path'] : null;
+                    $overview = $data['overview'] ?? null;
+                    $year = isset($data['release_date']) ? substr($data['release_date'],0,4) : null;
+                }
+            } catch (\Throwable $e) {}
+
+            \App\Models\Favori::create([
+                'favori_id' => $filmId,
+                'film_title' => $request->input('titre'),
+                'film_year' => $year,
+                'film_overview' => $overview,
+                'film_poster_path' => $poster,
+                'user_id' => $userId
+            ]);
+
+            return back()->with('success', 'Film ajouté aux favoris !');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Impossible d\'ajouter aux favoris.');
+        }
     }
 }

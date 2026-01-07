@@ -1,45 +1,17 @@
 <!-- filepath: resources/views/favoris/index.blade.php -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Favoris - Mes Films Préférés</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; padding: 20px;
-        }
-        .container {
-            max-width: 900px; margin: 50px auto; background: white;
-            border-radius: 10px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        h1 { text-align: center; margin-bottom: 30px; }
-        .success-message { background: #4caf50; color: white; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align:center; }
-        .films-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .film-card { border: 1px solid #ddd; border-radius: 5px; padding: 10px; text-align: center; background: #f9f9f9; }
-        .film-card img { width: 100%; border-radius: 5px; margin-bottom: 10px; }
-        textarea { width: 90%; padding: 5px; margin-bottom: 5px; }
-        input[type="number"] { width: 50px; padding: 5px; margin-bottom:5px; }
-        button { padding: 5px 10px; border-radius: 5px; border: none; background: #667eea; color: white; cursor: pointer; margin-bottom:5px; }
-        button:hover { background: #5568d3; }
-        a { text-decoration: none; color: #667eea; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        @auth
-            @include('partials.navbar')
-        @endauth
-        <h1>⭐ Mes Favoris</h1>
+@extends('layouts.app')
+
+@section('title','Mes Favoris - Mes Films Préférés')
+
+@section('content')
+    <div class="container-card">
+        <h1 style="margin:0 0 14px">⭐ Mes Favoris</h1>
 
         @if(session('success'))
-            <div class="success-message">{{ session('success') }}</div>
+            <div style="background:#4caf50;color:#fff;padding:10px;border-radius:8px;margin-bottom:12px;text-align:center">{{ session('success') }}</div>
         @endif
 
-        <a href="/rechercher">← Retour à la recherche</a>
+        <a href="/rechercher" class="btn-secondary" style="display:inline-block;margin-bottom:14px">← Retour à la recherche</a>
 
         @if($favoris->isEmpty())
             <p>Vous n'avez aucun favori pour le moment.</p>
@@ -50,24 +22,27 @@
                         @if($favori->film_poster_path)
                             <img src="{{ $favori->film_poster_path }}" alt="{{ $favori->film_title }}">
                         @endif
-                        <h3>{{ $favori->film_title }}</h3>
-                        <p>{{ $favori->film_overview ?? 'Pas de description.' }}</p>
+                        <div class="meta">
+                            <h3 style="margin:8px 0">{{ $favori->film_title }}</h3>
+                            <p style="color:var(--muted);font-size:14px">{{ \Illuminate\Support\Str::limit($favori->film_overview ?? 'Pas de description.', 140) }}</p>
 
-                        <form action="{{ route('favoris.destroy', $favori->id) }}" method="POST">
-                            @csrf
-                            <button type="submit">Supprimer</button>
-                        </form>
+                            <form action="{{ route('favoris.destroy', $favori->id) }}" method="POST" style="margin-top:10px">
+                                @csrf
+                                <button class="btn-primary" type="submit">Supprimer</button>
+                            </form>
 
-                        <form action="{{ route('favoris.updateAvis', $favori->id) }}" method="POST">
-                            @csrf
-                            <textarea name="avis" placeholder="Votre avis">{{ $favori->avis }}</textarea>
-                            <input type="number" name="note" min="1" max="5" value="{{ $favori->note ?? 3 }}">
-                            <button type="submit">Mettre à jour l'avis</button>
-                        </form>
+                            <form action="{{ route('favoris.updateAvis', $favori->id) }}" method="POST" style="margin-top:8px">
+                                @csrf
+                                <textarea name="avis" placeholder="Votre avis" rows="2" style="width:100%;padding:8px;border-radius:6px;border:1px solid #eee">{{ $favori->avis }}</textarea>
+                                <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                                    <input type="number" name="note" min="1" max="5" value="{{ $favori->note ?? 3 }}" style="width:64px;padding:8px;border-radius:6px;border:1px solid #eee">
+                                    <button class="btn-primary" type="submit">Mettre à jour</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 @endforeach
             </div>
         @endif
     </div>
-</body>
-</html>
+@endsection

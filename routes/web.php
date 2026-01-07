@@ -26,6 +26,7 @@ Route::controller(ConnectController::class)->group(function () {
 // Routes protégées
 // API helpers for AJAX searches
 Route::get('/api/users/search', [AmiController::class, 'searchUsers'])->name('api.users.search');
+Route::get('/api/friends/search', [AmiController::class, 'searchFriends'])->name('api.friends.search');
 Route::get('/api/movies/search', [FilmController::class, 'searchMoviesAjax'])->name('api.movies.search');
 
 Route::controller(FilmController::class)->group(function () {
