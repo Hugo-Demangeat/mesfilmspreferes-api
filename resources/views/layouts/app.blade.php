@@ -6,14 +6,20 @@
     <title>@yield('title', 'Mes Films Préférés')</title>
     @include('partials.theme')
 </head>
-<body>
-    <header style="padding:18px 24px;background:linear-gradient(90deg,#0b1226,#112240);color:#fff;">
-        <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px">
-            <a href="{{ route('accueil') }}" style="color:#fff;text-decoration:none;font-weight:800;font-size:20px">🎬 Mes Films Préférés</a>
+<body class="app-body">
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{{ route('accueil') }}" class="brand">
+                <img src="{{ asset('images/logo-mesfilmspreferes.png') }}" alt="Logo Mes Films Préférés" class="brand-logo">
+                <span class="brand-text">
+                    <span class="brand-title">Mes Films Préférés</span>
+                    <span class="brand-subtitle">Ciné, favoris, partage</span>
+                </span>
+            </a>
             @auth
                 @include('partials.navbar')
             @else
-                <div>
+                <div class="header-actions">
                     <a class="btn-primary" href="{{ route('connexion') }}">Se connecter</a>
                     <a class="btn-secondary" href="{{ route('creerCompte') }}">Créer un compte</a>
                 </div>
@@ -21,7 +27,7 @@
         </div>
     </header>
 
-    <main style="max-width:1200px;margin:28px auto;padding:0 20px">
+    <main class="main-content">
         @yield('content')
     </main>
 

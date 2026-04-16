@@ -1,40 +1,137 @@
 <style>
-    /* Shared auth / page container styles to match site */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
         min-height: 100vh;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 28%),
+                    linear-gradient(135deg, #0b1226 0%, #10213c 100%);
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
-        color: #333;
+        padding: 24px;
+        color: #0f1724;
     }
+
     .container {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.18);
-        padding: 36px 34px;
-        max-width: 520px;
         width: 100%;
+        max-width: 520px;
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 34px;
+        box-shadow: 0 24px 80px rgba(2, 6, 23, 0.18);
+        border: 1px solid rgba(15, 23, 42, 0.08);
     }
-    h1 { text-align:center; margin-bottom:18px; color:#222; }
-    .form-group { margin-bottom:16px; }
-    label { display:block; margin-bottom:6px; font-weight:600; color:#333; }
-    input[type="text"], input[type="email"], input[type="password"] {
-        width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;
+
+    h1 {
+        margin: 0 0 18px;
+        font-size: clamp(1.75rem, 3vw, 2.3rem);
+        text-align: center;
+        color: #111827;
     }
-    .auth-actions { display:flex; gap:10px; justify-content:center; align-items:center; margin-top:6px; }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: #0f1724;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: #f8fafc;
+        color: #0f1724;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: rgba(229, 9, 20, 0.35);
+        box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.08);
+    }
+
+    .auth-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 14px;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 14px 20px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.18s ease, opacity 0.18s ease;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
     .btn-primary {
-        background:#667eea; color:white; padding:12px 18px; border-radius:8px; border:none; cursor:pointer; font-weight:700; display:inline-flex; gap:8px; align-items:center; text-decoration:none;
+        background: #e50914;
+        color: #fff;
     }
-    .btn-primary .icon{font-size:16px}
+
     .btn-secondary {
-        background:#f5f7ff; color:#5568d3; border:1px solid #dbe4ff; padding:11px 16px; border-radius:8px; text-decoration:none; font-weight:700; display:inline-flex; gap:8px; align-items:center;
+        background: #f8fafc;
+        color: #111827;
+        border: 1px solid rgba(15, 23, 42, 0.08);
     }
-    .btn-secondary:hover, .btn-primary:hover { transform:translateY(-2px); }
-    .link { text-align:center; margin-top:12px; }
-    .error { color:#d32f2f; margin-top:6px; font-size:13px }
-    @media(max-width:480px){ .container{padding:20px} .auth-actions{flex-direction:column} }
+
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    button:hover {
+        transform: translateY(-1px);
+        opacity: 0.95;
+    }
+
+    .link {
+        text-align: center;
+        margin-top: 16px;
+        color: #475569;
+    }
+
+    .link a {
+        color: #0f1724;
+        font-weight: 700;
+    }
+
+    .error {
+        color: #b91c1c;
+        margin-top: 8px;
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 520px) {
+        body {
+            padding: 18px;
+        }
+
+        .container {
+            padding: 28px;
+        }
+
+        .auth-actions {
+            flex-direction: column;
+        }
+    }
 </style>
