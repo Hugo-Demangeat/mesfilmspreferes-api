@@ -28,6 +28,7 @@ Route::controller(ConnectController::class)->group(function () {
 Route::get('/api/users/search', [AmiController::class, 'searchUsers'])->name('api.users.search');
 Route::get('/api/friends/search', [AmiController::class, 'searchFriends'])->name('api.friends.search');
 Route::get('/api/movies/search', [FilmController::class, 'searchMoviesAjax'])->name('api.movies.search');
+Route::get('/api/movies/category', [FilmController::class, 'categoryMoviesAjax'])->name('api.movies.category');
 
 Route::controller(FilmController::class)->group(function () {
     Route::get('/rechercher', 'search')->name('films.search');

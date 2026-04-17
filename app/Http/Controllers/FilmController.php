@@ -79,6 +79,49 @@ class FilmController extends Controller
         }
     }
 
+    private function callApiList(string $path)
+    {
+        $apiKey = '63905b28b94957ba2d061a85b849243f';
+        $url = "https://api.themoviedb.org/3{$path}?api_key={$apiKey}&language=fr";
+
+        try {
+            $response = @file_get_contents($url);
+            if ($response === false) {
+                return [];
+            }
+            $data = json_decode($response, true);
+            return $data['results'] ?? [];
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    public function categoryMoviesAjax(Request $request): JsonResponse
+    {
+        $type = $request->query('type', 'upcoming');
+        $paths = [
+            'upcoming' => '/movie/upcoming',
+            'popular' => '/movie/popular',
+            'now_playing' => '/movie/now_playing',
+            'top_rated' => '/movie/top_rated',
+        ];
+
+        $endpoint = $paths[$type] ?? $paths['upcoming'];
+        $results = $this->callApiList($endpoint);
+
+        $mapped = array_map(function ($m) {
+            return [
+                'id' => $m['id'] ?? null,
+                'title' => $m['title'] ?? ($m['name'] ?? ''),
+                'poster_path' => $m['poster_path'] ?? null,
+                'release_date' => $m['release_date'] ?? null,
+                'vote_average' => $m['vote_average'] ?? null,
+            ];
+        }, array_slice($results, 0, 12));
+
+        return response()->json($mapped);
+    }
+
     public function show($id)
     {
         $apiKey = '63905b28b94957ba2d061a85b849243f';

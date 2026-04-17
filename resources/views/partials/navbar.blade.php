@@ -6,6 +6,8 @@
     .nav .nav-btn:hover{filter:brightness(.95);transform:translateY(-2px);box-shadow:0 6px 18px rgba(86,103,211,0.12)}
     .nav .back-btn{background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.12);padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center}
     .nav .back-btn:hover{background:rgba(255,255,255,0.02)}
+    .avatar-nav{border:2px solid rgba(255,255,255,0.3);transition:all .15s}
+    .avatar-nav:hover{border-color:rgba(255,255,255,0.5)}
     @media(max-width:600px){.nav{gap:6px}.nav .nav-btn{padding:8px 10px}}
 </style>
 
@@ -32,18 +34,11 @@
         </a>
 
         <a class="nav-btn" href="{{ route('profil.index') }}" aria-label="Profil">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
-            <span style="margin-left:8px">Profil</span>
-        </a>
-
-        <a class="back-btn" href="javascript:history.back()" aria-label="Retour">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6"/></svg>
-            <span style="margin-left:8px">Retour</span>
-        </a>
-
-        <a class="back-btn" href="{{ route('accueil') }}" aria-label="Accueil">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
-            <span style="margin-left:8px">Accueil</span>
+            <img src="{{ auth()->user()->avatar ? asset('avatars/' . auth()->user()->avatar) : asset('images/profil.svg') }}" 
+                 alt="Avatar" 
+                 class="avatar-nav" 
+                 style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:8px;">
+            <span>{{ auth()->user()->firstname }}</span>
         </a>
     </div>
 </div>

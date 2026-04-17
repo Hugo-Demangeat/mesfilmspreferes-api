@@ -16,7 +16,7 @@
         @if($favoris->isEmpty())
             <p>Vous n'avez aucun favori pour le moment.</p>
         @else
-            <div class="films-grid">
+            <div class="films-grid {{ $favoris->count() === 1 ? 'single-film' : '' }}">
                 @foreach($favoris as $favori)
                     <div class="film-card">
                         @if($favori->film_poster_path)
@@ -33,9 +33,15 @@
 
                             <form action="{{ route('favoris.updateAvis', $favori->id) }}" method="POST" style="margin-top:8px">
                                 @csrf
-                                <textarea name="avis" placeholder="Votre avis" rows="2" style="width:100%;padding:8px;border-radius:6px;border:1px solid #eee">{{ $favori->avis }}</textarea>
+                                <textarea name="avis" placeholder="Votre avis" rows="2" style="width:100%;padding:8px;border-radius:6px;border:1px solid #eee">{{ old('avis', $favori->avis) }}</textarea>
+                                @php
+                                    $favoriNote = old('note');
+                                    if (is_null($favoriNote)) {
+                                        $favoriNote = $favori->avisRecords->first()->rating ?? '';
+                                    }
+                                @endphp
                                 <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-                                    <input type="number" name="note" min="1" max="5" value="{{ $favori->note ?? 3 }}" style="width:64px;padding:8px;border-radius:6px;border:1px solid #eee">
+                                    <input type="number" name="note" min="1" max="5" value="{{ $favoriNote }}" placeholder="1-5" style="width:64px;padding:8px;border-radius:6px;border:1px solid #eee">
                                     <button class="btn-primary" type="submit">Mettre à jour</button>
                                 </div>
                             </form>

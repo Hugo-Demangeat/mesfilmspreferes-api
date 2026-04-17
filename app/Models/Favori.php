@@ -50,7 +50,7 @@ class Favori extends Model
 		return $this->belongsTo(User::class);
 	}
 
-	public function avis()
+	public function avisRecords()
 	{
 		return $this->hasMany(Avi::class);
 	}

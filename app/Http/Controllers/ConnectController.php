@@ -10,7 +10,25 @@ class ConnectController extends Controller
 {
     public function index()
     {
-        return view('accueil');
+        $upcomingMovies = $this->fetchUpcomingMovies();
+        return view('accueil', compact('upcomingMovies'));
+    }
+
+    private function fetchUpcomingMovies()
+    {
+        $apiKey = '63905b28b94957ba2d061a85b849243f';
+        $url = "https://api.themoviedb.org/3/movie/upcoming?api_key={$apiKey}&language=fr";
+
+        try {
+            $response = @file_get_contents($url);
+            if ($response === false) {
+                return [];
+            }
+            $data = json_decode($response, true);
+            return $data['results'] ?? [];
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
     
     public function showCreateForm()

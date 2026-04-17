@@ -17,7 +17,9 @@ class FavoriController extends Controller
         // À implémenter : récupérer les favoris de l'utilisateur
         // Si la table n'existe pas encore, fournir une collection vide pour éviter les erreurs dans la vue
         try {
-            $favoris = \App\Models\Favori::where('user_id', Auth::id())->get();
+            $favoris = \App\Models\Favori::with(['avisRecords' => function ($query) {
+                $query->where('user_id', Auth::id())->latest('created_at');
+            }])->where('user_id', Auth::id())->get();
         } catch (\Throwable $e) {
             $favoris = collect([]);
         }
@@ -85,32 +87,37 @@ class FavoriController extends Controller
         
         // Validation des données
         $request->validate([
-            'avis' => 'required|string|max:500',
+            'avis' => 'nullable|string|max:500',
             'note' => 'required|integer|between:1,5'
         ]);
         
         try {
             $favoriObj = \App\Models\Favori::where('id', $favori)->where('user_id', Auth::id())->firstOrFail();
 
+            $hasNewAvis = $request->filled('avis');
+            $avisText = $request->input('avis');
+
             // Create or update an 'Avi' (avis) record linked to this favori and user
             $avi = \App\Models\Avi::where('favori_id', $favoriObj->id)->where('user_id', Auth::id())->first();
             if ($avi) {
-                $avi->update([
-                    'rating' => $request->input('note'),
-                    'texte' => $request->input('avis')
-                ]);
+                $avi->rating = $request->input('note');
+                if ($hasNewAvis) {
+                    $avi->texte = $avisText;
+                }
+                $avi->save();
             } else {
                 \App\Models\Avi::create([
                     'favori_id' => $favoriObj->id,
                     'user_id' => Auth::id(),
                     'rating' => $request->input('note'),
-                    'texte' => $request->input('avis')
+                    'texte' => $avisText
                 ]);
             }
 
-            // Also store a short copy on the Favori if desired
-            $favoriObj->avis = $request->input('avis');
-            $favoriObj->save();
+            if ($hasNewAvis) {
+                $favoriObj->avis = $avisText;
+                $favoriObj->save();
+            }
 
             return redirect('/mesFavoris')->with('success', 'Avis mis à jour !');
         } catch (\Throwable $e) {

@@ -61,7 +61,10 @@
         @else
             <div class="amis-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;margin-top:12px">
                 @foreach($amis as $ami)
-                    <div class="film-card" style="padding:12px">
+                    <div class="film-card" style="padding:12px;text-align:center">
+                        <img src="{{ $ami->friend->avatar ? asset('avatars/' . $ami->friend->avatar) : asset('images/profil.svg') }}" 
+                             alt="Avatar de {{ $ami->friend->firstname }}" 
+                             style="width:60px;height:60px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block;border:2px solid var(--accent)">
                         <h3 style="margin:6px 0">{{ $ami->friend->username ?? 'Utilisateur supprimé' }}</h3>
                         <p style="color:var(--muted)">{{ $ami->friend->firstname ?? '' }} {{ $ami->friend->lastname ?? '' }}</p>
 
