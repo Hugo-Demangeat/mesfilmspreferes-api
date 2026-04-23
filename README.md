@@ -1,59 +1,197 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Mes Films Préférés - API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Une application web Laravel permettant aux utilisateurs de découvrir, gérer et partager leurs films préférés avec leurs amis.
 
-## About Laravel
+## Description
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Cette application est une plateforme sociale centrée sur les films où les utilisateurs peuvent :
+- Rechercher des films via l'API TMDB (The Movie Database)
+- Ajouter des films à leurs favoris personnels
+- Donner des avis sur leurs films favoris
+- Gérer une liste d'amis
+- Partager des films avec leurs amis
+- Consulter les détails complets des films (synopsis, casting, bandes-annonces)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fonctionnalités
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Gestion des Utilisateurs
+- Inscription et connexion sécurisées
+- Profils utilisateurs avec avatars personnalisables
+- Mise à jour des informations de profil
 
-## Learning Laravel
+### Recherche et Découverte de Films
+- Recherche par titre via l'API TMDB
+- Affichage des films populaires, à venir, en salle et les mieux notés
+- Détails complets des films : synopsis, casting, bandes-annonces YouTube
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Gestion des Favoris
+- Ajout/suppression de films aux favoris
+- Attribution d'avis personnels sur les films favoris
+- Liste personnelle des films favoris
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Réseau Social
+- Recherche et ajout d'amis
+- Gestion de la liste d'amis (ajout/suppression)
+- Partage de films avec les amis
+- Consultation des partages reçus
 
-## Laravel Sponsors
+### APIs AJAX
+- Recherche d'utilisateurs pour ajouter des amis
+- Recherche de films en temps réel
+- Recherche d'amis existants
+- Catégorisation des films (populaires, à venir, etc.)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Prérequis
 
-### Premium Partners
+Avant d'installer l'application, assurez-vous d'avoir installé :
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **PHP** >= 8.2
+- **Composer** (gestionnaire de dépendances PHP)
+- **Node.js** et **npm** (pour la compilation des assets front-end)
+- **Serveur web** (Apache/Nginx) ou utiliser le serveur de développement Laravel
+- **Base de données** (MySQL, PostgreSQL, SQLite, etc.) - Recommandé : MySQL avec XAMPP
 
-## Contributing
+## Installation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Cloner le dépôt
 
-## Code of Conduct
+```bash
+git clone https://github.com/Hugo-Demangeat/mesfilmspreferes-api.git
+cd mesfilmspreferes-api
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Installer les dépendances PHP
 
-## Security Vulnerabilities
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Configuration de l'environnement
 
-## License
+Copiez le fichier d'exemple d'environnement :
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+cp .env.example .env
+```
+
+Modifiez le fichier `.env` pour configurer votre base de données :
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=mesfilmspreferes
+DB_USERNAME=votre_username
+DB_PASSWORD=votre_password
+```
+
+### 4. Générer la clé d'application
+
+```bash
+php artisan key:generate
+```
+
+### 5. Migrer la base de données
+
+```bash
+php artisan migrate
+```
+
+### 6. Installer les dépendances front-end
+
+```bash
+npm install
+```
+
+### 7. Compiler les assets
+
+Pour le développement :
+```bash
+npm run dev
+```
+
+Pour la production :
+```bash
+npm run build
+```
+
+## Utilisation
+
+### Lancer l'application
+
+Utilisez la commande de développement incluse qui lance plusieurs services :
+
+```bash
+composer run dev
+```
+
+Ou lancez manuellement :
+
+```bash
+# Serveur web
+php artisan serve
+
+# Queue des jobs (si nécessaire)
+php artisan queue:work
+
+# Logs en temps réel
+php artisan pail
+
+# Compilation des assets
+npm run dev
+```
+
+L'application sera accessible sur `http://localhost:8000`
+
+### Utilisation de base
+
+1. **Inscription/Connexion** : Créez un compte ou connectez-vous
+2. **Rechercher des films** : Utilisez la barre de recherche pour trouver des films
+3. **Ajouter aux favoris** : Cliquez sur "Ajouter aux favoris" depuis la page de recherche
+4. **Gérer les amis** : Recherchez des utilisateurs et ajoutez-les comme amis
+5. **Partager des films** : Partagez vos films favoris avec vos amis
+6. **Consulter le profil** : Mettez à jour vos informations et uploadez un avatar
+
+## Tests
+
+Lancez les tests avec PHPUnit :
+
+```bash
+php artisan test
+```
+
+## Structure du Projet
+
+```
+app/
+├── Http/Controllers/     # Contrôleurs (Film, Favori, Ami, etc.)
+├── Models/              # Modèles Eloquent (User, Favori, Partage, etc.)
+config/                  # Configuration Laravel
+
+database/
+├── migrations/          # Migrations de base de données
+├── seeders/            # Seeders pour données de test
+public/                  # Assets publics et avatars
+
+resources/
+├── views/              # Templates Blade
+├── js/                 # JavaScript/Vue.js
+├── css/                # Styles CSS
+
+routes/
+├── web.php             # Routes de l'application
+```
+
+## Technologies Utilisées
+
+- **Laravel 12** : Framework PHP
+- **TMDB API** : Base de données de films
+- **MySQL** : Base de données
+- **Blade** : Moteur de templates
+- **Tailwind CSS** : Framework CSS
+- **Alpine.js** : Framework JavaScript
+- **Vite** : Outil de build front-end
+
+## Auteur
+
+Hugo Demangeat
