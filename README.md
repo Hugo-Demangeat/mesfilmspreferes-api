@@ -130,15 +130,6 @@ Ou lancez manuellement :
 ```bash
 # Serveur web
 php artisan serve
-
-# Queue des jobs (si nécessaire)
-php artisan queue:work
-
-# Logs en temps réel
-php artisan pail
-
-# Compilation des assets
-npm run dev
 ```
 
 L'application sera accessible sur `http://localhost:8000`
@@ -186,14 +177,6 @@ Le schéma MCD du projet décrit les entités principales et leurs relations :
 - Amitiés
 
 *Insérer ici le diagramme MCD correspondant.*
-
-## Tests
-
-Lancez les tests avec PHPUnit :
-
-```bash
-php artisan test
-```
 
 ## Structure du Projet
 
