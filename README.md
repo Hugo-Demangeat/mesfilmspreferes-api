@@ -35,7 +35,7 @@ Cette application est une plateforme sociale centrée sur les films où les util
 - Partage de films avec les amis
 - Consultation des partages reçus
 
-### APIs AJAX
+### APIs TMDB
 - Recherche d'utilisateurs pour ajouter des amis
 - Recherche de films en temps réel
 - Recherche d'amis existants
