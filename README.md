@@ -143,14 +143,49 @@ npm run dev
 
 L'application sera accessible sur `http://localhost:8000`
 
-### Utilisation de base
+### Guide d'utilisation
 
-1. **Inscription/Connexion** : Créez un compte ou connectez-vous
-2. **Rechercher des films** : Utilisez la barre de recherche pour trouver des films
-3. **Ajouter aux favoris** : Cliquez sur "Ajouter aux favoris" depuis la page de recherche
-4. **Gérer les amis** : Recherchez des utilisateurs et ajoutez-les comme amis
-5. **Partager des films** : Partagez vos films favoris avec vos amis
-6. **Consulter le profil** : Mettez à jour vos informations et uploadez un avatar
+1. **Inscription / connexion**
+   - Accédez à la page de connexion.
+   - Créez un compte ou connectez-vous avec vos identifiants.
+   - *Capture d'écran à insérer ici.*
+
+2. **Rechercher un film**
+   - Utilisez le champ de recherche pour saisir le titre d'un film.
+   - Validez la recherche et consultez les résultats.
+   - *Capture d'écran à insérer ici.*
+
+3. **Ajouter un film aux favoris**
+   - Dans les résultats de recherche, cliquez sur le bouton pour ajouter aux favoris.
+   - Le film est stocké dans votre liste personnelle.
+   - *Capture d'écran à insérer ici.*
+
+4. **Gérer les amis**
+   - Recherchez un utilisateur et envoyez-lui une demande d'ami.
+   - Acceptez ou supprimez un ami depuis la liste des amis.
+   - *Capture d'écran à insérer ici.*
+
+5. **Partager un film**
+   - Sélectionnez un film et partagez-le avec un ami de votre réseau.
+   - Le destinataire peut consulter le partage dans son espace dédié.
+   - *Capture d'écran à insérer ici.*
+
+6. **Consulter et modifier le profil**
+   - Accédez à votre page de profil.
+   - Modifiez vos informations et changez votre avatar.
+   - *Capture d'écran à insérer ici.*
+
+### Modèle conceptuel de données (MCD)
+
+Le schéma MCD du projet décrit les entités principales et leurs relations :
+
+- Utilisateur
+- Favoris
+- Partage
+- Avis
+- Amitiés
+
+*Insérer ici le diagramme MCD correspondant.*
 
 ## Tests
 
