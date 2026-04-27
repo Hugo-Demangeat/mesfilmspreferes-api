@@ -178,6 +178,7 @@ Le schéma MCD du projet décrit les entités principales et leurs relations :
 
 *Insérer ici le diagramme MCD correspondant.*
 
+
 ## Structure du Projet
 
 ```
