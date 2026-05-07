@@ -201,7 +201,7 @@ Le schéma MCD du projet décrit les entités principales et leurs relations :
 - Avis
 - Amitiés
 
-*Insérer ici le diagramme MCD correspondant.*
+![MCD](image-readme/MCD.png)
 
 ## Structure du Projet
 
