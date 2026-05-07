@@ -138,33 +138,58 @@ L'application sera accessible sur `http://localhost:8000`
 
 1. **Inscription / connexion**
    - Accédez à la page de connexion.
-   - Créez un compte ou connectez-vous avec vos identifiants.
-   - *Capture d'écran à insérer ici.*
+   - Créez un compte si vous n'en avez pas encore.
+   - Connectez-vous ensuite avec votre email et votre mot de passe.
 
-2. **Rechercher un film**
-   - Utilisez le champ de recherche pour saisir le titre d'un film.
-   - Validez la recherche et consultez les résultats.
-   - *Capture d'écran à insérer ici.*
+   ![Connexion](image-readme/connexion.png)
 
-3. **Ajouter un film aux favoris**
-   - Dans les résultats de recherche, cliquez sur le bouton pour ajouter aux favoris.
-   - Le film est stocké dans votre liste personnelle.
-   - *Capture d'écran à insérer ici.*
+2. **Création de compte**
+   - Remplissez prénom, nom, nom d'utilisateur, email et mot de passe.
+   - Confirmez le mot de passe pour valider l'inscription.
 
-4. **Gérer les amis**
-   - Recherchez un utilisateur et envoyez-lui une demande d'ami.
-   - Acceptez ou supprimez un ami depuis la liste des amis.
-   - *Capture d'écran à insérer ici.*
+   ![Créer un compte](image-readme/create.png)
 
-5. **Partager un film**
-   - Sélectionnez un film et partagez-le avec un ami de votre réseau.
-   - Le destinataire peut consulter le partage dans son espace dédié.
-   - *Capture d'écran à insérer ici.*
+3. **Recherche d'un film**
+   - Entrez un titre dans la barre de recherche.
+   - Utilisez les suggestions automatiques ou soumettez le formulaire.
+   - Parcourez les résultats et cliquez sur un film pour voir sa fiche.
 
-6. **Consulter et modifier le profil**
-   - Accédez à votre page de profil.
-   - Modifiez vos informations et changez votre avatar.
-   - *Capture d'écran à insérer ici.*
+   ![Recherche de films](image-readme/recherche.png)
+
+4. **Consultation du détail d'un film**
+   - Depuis les résultats, ouvrez la fiche du film.
+   - Voir le synopsis, la note TMDB, la durée et la bande-annonce.
+   - Ajoutez le film à vos favoris ou supprimez-le si déjà ajouté.
+
+   ![Détail du film](image-readme/détail.png)
+
+5. **Gérer les favoris**
+   - Consultez vos films favoris depuis la page "Mes Favoris".
+   - Supprimez un favori ou ajoutez un avis personnel.
+   - Donnez une note de 1 à 5 et enregistrez votre avis.
+
+   ![Favoris](image-readme/favoris.png)
+
+6. **Gérer les amis**
+   - Recherchez un utilisateur par nom ou pseudo.
+   - Cliquez sur un résultat pour sélectionner l'ami, puis ajoutez-le.
+   - Supprimez un ami depuis la liste si nécessaire.
+
+   ![Mes amis](image-readme/ami.png)
+
+7. **Partager un film**
+   - Choisissez un ami dans votre réseau.
+   - Indiquez le titre du film à partager et un message optionnel.
+   - Envoyez le partage et consultez les partages reçus ou envoyés.
+
+   ![Partage de film](image-readme/partage.png)
+
+8. **Consulter et modifier le profil**
+   - Accédez à votre page de profil pour voir vos informations.
+   - Modifiez votre prénom, nom, email et mot de passe si besoin.
+   - Changez votre avatar en téléchargeant une nouvelle image.
+
+   ![Profil](image-readme/profil.png)
 
 ### Modèle conceptuel de données (MCD)
 
